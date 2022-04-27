@@ -1,0 +1,73 @@
+.container {
+    width: 700px;
+    margin: 5rem auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.actions {
+    padding: 10px;
+    margin: 5px;
+    display: flex;
+    justify-content: space-between;
+}
+
+form {
+    width: 100%;
+}
+
+.add_task {
+    width: 100%;
+}
+
+.actions button {
+    width: 130px;
+    margin: 0;
+}
+
+.add_task_text {
+    width: 360px;
+}
+
+.task_text {
+    margin: 10px;
+}
+
+.tasks_edit {
+    width: 340px;
+    padding: 3px 27px;
+    margin-right: 20px;
+}
+.task_btn {
+    display: flex;
+    margin-top: 10px;
+}
+.task_btn button {
+    margin-right: 20px;
+}
+
+.task_list {
+    background-color: #dedede;
+    display: block;
+    width: 740px;
+}
+
+.task {
+    border: solid 1px;
+    margin: 5px;
+    width: 700px;
+    padding: 5px;
+}
+
+.task_checkbox_wrapper {
+    position: relative;
+}
+
+.task_checkbox {
+    position: absolute;
+    top: -38px;
+    left: 600px;
+    width: 80px;
+    height: 80px;
+}
