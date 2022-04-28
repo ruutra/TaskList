@@ -22,7 +22,7 @@ function getTasks ($userId)
     }
 
     if (isset($_POST['task_delete'])) {
-        deleteTask($conn, $_POST['task_delete']);
+        deleteTask($conn,$_POST['task_delete'],$userId);
     }
 
     if (isset($_POST['task_remove_all'])) {
