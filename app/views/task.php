@@ -12,9 +12,19 @@
         >
     </div>
     <div class="task_btn">
-        <button type="submit" name="task_ready_toggle" class="btn btn-success" value="<?php echo $task['id'] ?>">
+        <button type="submit"
+                name="task_ready_toggle"
+                formaction="/?action=ready_toggle"
+                class="btn btn-success"
+                value="<?php echo $task['id'] ?>"
+        >
             <?php echo $task['isReady'] ? 'UNREADY' : 'READY' ?>
         </button>
-        <button type="submit" name="task_delete" class="btn btn-danger" value="<?php echo $task['id'] ?>">DELETE</button>
+        <button type="submit"
+                name="task_delete"
+                formaction="/?action=task_delete"
+                class="btn btn-danger"
+                value="<?php echo $task['id'] ?>"
+        >DELETE</button>
     </div>
 </div>

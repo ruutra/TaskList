@@ -3,7 +3,7 @@
 include_once 'models/User.php';
 include_once 'models/Task.php';
 
-class Router
+class Controller
 {
     const ROUTS = [
         'auth' => ['class' => 'User', 'method' => 'auth', 'redirect' => 'tasks.php', 'template' => 'auth.php', 'auth' => false],
@@ -43,7 +43,7 @@ class Router
             $data = $class->{$route['method']}($_POST, $userId);
         } catch (Exception $e) {
             echo sprintf("<script>alert('Ошибка: %s')</script>", $e->getMessage());
-            $data = $route['class'] === 'User' ? [] : (new Task())->getTasks($_POST, $userId);
+            $data = $route['class'] === `User` ? [] : (new Task())->getTasks($_POST, $userId);
         }
 
         if (isset($route['redirect']) && $data) {

@@ -29,16 +29,13 @@ class DB  {
     {
         $dsn = "mysql:host=$this->host;port=$this->port;name=$this->name;charset=utf8";
         $conn = new PDO($dsn, $this->user, $this->password);
-        if (!$conn)
+        if (!$conn) {
             throw new Exception('Невозможно подключиться к серверу базы данных');
-        else {
-         //$query = $conn->query('set names utf8');
-         //if (!$query)
-         //    throw new Exception('Невозможно подключиться к серверу базы данных');
-         //else
-                return $conn;
         }
+
+        return $conn;
     }
+
     public function migrationFiles($conn) {
         $allFiles = glob( __DIR__ . '/migrations/*.sql');
         foreach ($allFiles as $file) {
