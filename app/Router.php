@@ -1,9 +1,13 @@
 <?php
+//include_once 'models/User.php';
+//include_once 'models/Task.php';
 
-include_once 'models/User.php';
-include_once 'models/Task.php';
+spl_autoload_register(function ($class){
+   $path = __DIR__ . "../models/{$class}.php";
+   include_once $path;
+});
 
-class Controller
+class Router
 {
     const ROUTS = [
         'auth' => ['class' => 'User', 'method' => 'auth', 'redirect' => 'tasks.php', 'template' => 'auth.php', 'auth' => false],
@@ -17,9 +21,6 @@ class Controller
         'remove_all' => ['class' => 'Task', 'method' => 'removeAllTasks', 'template' => 'tasks.php', 'auth' => true],
     ];
 
-    /**
-     * @return bool
-     */
     public function handleRequest(): bool
     {
         $page = 'index';
@@ -56,6 +57,7 @@ class Controller
 
         return $this->render($template, $data);
     }
+
 
     /**
      * @param string $template

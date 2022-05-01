@@ -7,6 +7,9 @@ class Task
     /** @var PDO */
     private $db;
 
+    /**
+     * @throws Exception
+     */
     public function __construct()
     {
         $db = new DB();

@@ -2,8 +2,8 @@
 
 session_start();
 
-include 'app/Controller.php';
+include 'app/Router.php';
 
-$controller = new Controller();
+$controller = new Router();
 $controller->handleRequest();
 
