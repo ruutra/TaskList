@@ -1,6 +1,10 @@
 <?php
 
-include_once 'database/DB.php';
+namespace App\Models;
+
+use PDO;
+use Exception;
+use Database\DB;
 
 class User
 {
@@ -14,16 +18,13 @@ class User
     }
 
     /**
-     * @param array $request
-     * @param null $userId
-     * @return null|int
+     * @param $login
+     * @param  $password
+     * @return int
      * @throws Exception
      */
-    public function auth(array $request, $userId): ?int
+    public function auth($login, $password): ?int
     {
-        $login = filter_var(trim($request['login']),FILTER_SANITIZE_STRING);
-        $password = filter_var(trim($request['password']),FILTER_SANITIZE_STRING);
-
         $sql = "SELECT * FROM `tasks`.`users` WHERE `login` = ?";
         $query = $this->db->prepare($sql);
         $query->execute([$login]);
@@ -36,7 +37,6 @@ class User
         if(password_verify($password, $user['password'])) {
             return (int) $user['id'];
         }
-
         throw new Exception('Неверный пароль!');
     }
 
@@ -46,15 +46,12 @@ class User
      * @return int|null
      * @throws Exception
      */
-    private function registration($login, $password): ?int
+    public function registration($login, $password): ?int
     {
-        if ($login == '') {
-            throw new Exception('Неверный логин!');
-        }
-        if ($password == '' || mb_strlen($password) < 8) {
+        if (mb_strlen($password) < 8) {
             throw new Exception('Недопустимая длина пароля!');
-
         }
+
         $hash = password_hash($password, PASSWORD_BCRYPT);
 
         $sql = "insert into `tasks`.`users` (`login`, `password`,`created_at`) values (?, ?, NOW())";
@@ -63,14 +60,9 @@ class User
         $stmt->execute([$login, $hash]);
         $result = $stmt->execute([$login,$password]);
         if (!$result) {
-            throw new Exception('Ошибка при регитрации!');
+            throw new Exception('Ошибка при регистрации !');
         }
         $id = $this->db->lastInsertId();
         return $id ? (int) $id : null;
-    }
-
-    public function exit(array $request, $userId)
-    {
-        return null;
     }
 }

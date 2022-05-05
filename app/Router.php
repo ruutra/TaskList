@@ -1,24 +1,21 @@
 <?php
-//include_once 'models/User.php';
-//include_once 'models/Task.php';
 
-spl_autoload_register(function ($class){
-   $path = __DIR__ . "../models/{$class}.php";
-   include_once $path;
-});
+namespace App;
+
+use Exception;
 
 class Router
 {
     const ROUTS = [
-        'auth' => ['class' => 'User', 'method' => 'auth', 'redirect' => 'tasks.php', 'template' => 'auth.php', 'auth' => false],
-        'exit' => ['class' => 'User', 'method' => 'exit', 'template' => 'auth.php'],
+        'auth' => ['class' => 'UserController', 'method' => 'userAuth', 'auth' => false],
+        'exit' => ['class' => 'UserController', 'method' => 'exit', 'auth' => true],
 
-        'index' => ['class' => 'Task', 'method' => 'getTasks', 'template' => 'tasks.php', 'auth' => true],
-        'add_task' => ['class' => 'Task', 'method' => 'addTask', 'template' => 'tasks.php', 'auth' => true],
-        'ready_toggle' => ['class' => 'Task', 'method' => 'taskReadyToggle', 'template' => 'tasks.php', 'auth' => true],
-        'ready_all' => ['class' => 'Task', 'method' => 'taskReadyAll', 'template' => 'tasks.php', 'auth' => true],
-        'task_delete' => ['class' => 'Task', 'method' => 'deleteTask', 'template' => 'tasks.php', 'auth' => true],
-        'remove_all' => ['class' => 'Task', 'method' => 'removeAllTasks', 'template' => 'tasks.php', 'auth' => true],
+        'index' => ['class' => 'TaskController', 'method' => 'getUserTask', 'auth' => true],
+        'add_task' => ['class' => 'TaskController', 'method' => 'addUserTask', 'auth' => true],
+        'ready_toggle' => ['class' => 'TaskController', 'method' => 'toggleUserTask', 'auth' => true],
+        'ready_all' => ['class' => 'TaskController', 'method' => 'userTaskReadyAll', 'auth' => true],
+        'task_delete' => ['class' => 'TaskController', 'method' => 'deleteUserTask', 'auth' => true],
+        'remove_all' => ['class' => 'TaskController', 'method' => 'removeAllUserTasks', 'auth' => true],
     ];
 
     public function handleRequest(): bool
@@ -30,32 +27,26 @@ class Router
 
         if (!isset(self::ROUTS[$page])) {
             header('HTTP/1.1 404 Not Found');
-            return $this->render('views/404.html');
+            return $this->render('404.html');
         }
 
         $route = self::ROUTS[$page];
         if ($route['auth'] && !isset($_SESSION['id'])) {
-            return $this->render('views/auth.php');
+            return $this->render('auth.php');
         }
 
         $userId = $_SESSION['id'] ?: null;
         try {
-            $class = new $route['class'];
+            $className = 'App\\Controllers\\' . $route['class'];
+            $class = new $className;
             $data = $class->{$route['method']}($_POST, $userId);
         } catch (Exception $e) {
             echo sprintf("<script>alert('Ошибка: %s')</script>", $e->getMessage());
-            $data = $route['class'] === `User` ? [] : (new Task())->getTasks($_POST, $userId);
+            header('Refresh: 0; url=' . $_SERVER['PHP_SELF']);
+            return false;
         }
+        return $this->render($data[0], $data[1]);
 
-        if (isset($route['redirect']) && $data) {
-            $_SESSION['id'] = $data;
-            $data = (new Task())->getTasks($_POST, $userId);
-            $template = 'views/' . $route['redirect'];
-        } else {
-            $template = 'views/' . $route['template'];
-        }
-
-        return $this->render($template, $data);
     }
 
 
@@ -70,7 +61,7 @@ class Router
         if (is_array($data)) {
             extract($data);
         }
-        include $template;
+        include __DIR__ . '\\views\\' . $template;
         echo ob_get_clean();
         return true;
     }

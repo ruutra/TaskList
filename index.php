@@ -1,9 +1,14 @@
 <?php
 
+use App\Router;
+
+ob_start();
 session_start();
 
-include 'app/Router.php';
+spl_autoload_register(function ($class) {
+    include_once  __DIR__ . '\\' . strtolower(str_replace('\\', '/', $class) . '.php');;
+});
 
-$controller = new Router();
-$controller->handleRequest();
+$router = new Router();
+$router->handleRequest();
 
